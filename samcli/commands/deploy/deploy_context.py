@@ -70,6 +70,7 @@ class DeployContext:
         profile,
         confirm_changeset,
         signing_profiles,
+        on_failure,
         use_changeset,
         disable_rollback,
     ):
@@ -101,6 +102,7 @@ class DeployContext:
         self.signing_profiles = signing_profiles
         self.use_changeset = use_changeset
         self.disable_rollback = disable_rollback
+        self.on_failure = on_failure
 
     def __enter__(self):
         return self
@@ -173,6 +175,7 @@ class DeployContext:
             self.confirm_changeset,
             self.use_changeset,
             self.disable_rollback,
+            self.on_failure
         )
 
     def deploy(
@@ -187,10 +190,11 @@ class DeployContext:
         s3_uploader,
         tags,
         region,
+        on_failure,
         fail_on_empty_changeset=True,
         confirm_changeset=False,
         use_changeset=True,
-        disable_rollback=False,
+        disable_rollback=False
     ):
         """
         Deploy the stack to cloudformation.
@@ -281,6 +285,7 @@ class DeployContext:
                     role_arn=role_arn,
                     notification_arns=notification_arns,
                     s3_uploader=s3_uploader,
+                    on_failure=on_failure,
                     tags=tags,
                 )
                 LOG.info(result)

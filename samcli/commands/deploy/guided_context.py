@@ -61,6 +61,7 @@ class GuidedContext:
         config_env=None,
         config_file=None,
         disable_rollback=None,
+        on_failure=None,
     ):
         self.template_file = template_file
         self.stack_name = stack_name
@@ -92,6 +93,7 @@ class GuidedContext:
         self.color = Colored()
         self.function_provider = None
         self.disable_rollback = disable_rollback
+        self.on_failure = on_failure
 
     @property
     def guided_capabilities(self):

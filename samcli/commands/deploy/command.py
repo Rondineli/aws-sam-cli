@@ -102,6 +102,15 @@ LOG = logging.getLogger(__name__)
     is_flag=True,
     help="Preserves the state of previously provisioned resources when an operation fails.",
 )
+@click.option(
+    "--on-failure",
+    default="ROLLBACK",
+    required=False,
+    is_flag=False,
+    type=click.Choice(["DO_NOTHING", "ROLLBACK", "DELETE"]),
+    help="Specify the action in case stack failed to deploy at stack creation "
+    "default action will be ROLLBACK if not defined.",
+)
 @stack_name_option(callback=guided_deploy_stack_name)  # pylint: disable=E1120
 @s3_bucket_option(guided=True)  # pylint: disable=E1120
 @image_repository_option
@@ -155,6 +164,7 @@ def cli(
     config_file,
     config_env,
     disable_rollback,
+    on_failure,
 ):
     """
     `sam deploy` command entry point
@@ -189,6 +199,7 @@ def cli(
         config_env,
         resolve_image_repos,
         disable_rollback,
+        on_failure,
     )  # pragma: no cover
 
 
@@ -221,6 +232,7 @@ def do_cli(
     config_env,
     resolve_image_repos,
     disable_rollback,
+    on_failure,
 ):
     """
     Implementation of the ``cli`` method
@@ -249,6 +261,7 @@ def do_cli(
             config_env=config_env,
             config_file=config_file,
             disable_rollback=disable_rollback,
+            on_failure=on_failure,
         )
         guided_context.run()
     else:
@@ -313,5 +326,6 @@ def do_cli(
             signing_profiles=guided_context.signing_profiles if guided else signing_profiles,
             use_changeset=True,
             disable_rollback=guided_context.disable_rollback if guided else disable_rollback,
+            on_failure=on_failure,
         ) as deploy_context:
             deploy_context.run()

@@ -517,6 +517,7 @@ class Deployer:
         parameter_values: List[Dict],
         capabilities: Optional[List[str]],
         role_arn: Optional[str],
+        on_failure: Optional[str],
         notification_arns: Optional[List[str]],
         s3_uploader: Optional[S3Uploader],
         tags: Optional[Dict],
@@ -567,6 +568,8 @@ class Deployer:
                 self.wait_for_execute(stack_name, "UPDATE", False)
                 LOG.info("\nStack update succeeded. Sync infra completed.\n")
             else:
+                kwargs["OnFailure"] = on_failure
+                print(kwargs)
                 result = self.create_stack(**kwargs)
                 self.wait_for_execute(stack_name, "CREATE", False)
                 LOG.info("\nStack creation succeeded. Sync infra completed.\n")
